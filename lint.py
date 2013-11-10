@@ -170,6 +170,12 @@ def lint_external(filename, settings, interpreter, linter):
         max_line_length = settings.get('pep8_max_line_length', 79)
         arguments.append('--pep8-max-line-length')
         arguments.append(str(max_line_length))
+        if settings.get('ignore') is not None:
+            arguments.append('--ignore')
+            arguments.append(', '.join(settings.get('ignore')))
+        if settings.get('select') is not None:
+            arguments.append('--select')
+            arguments.append(', '.join(settings.get('select')))
 
     # do we need to run complexity check
     complexity = settings.get('complexity', -1)
@@ -216,6 +222,10 @@ if __name__ == "__main__":
     parser.add_argument('--complexity', type=int, help="check complexity")
     parser.add_argument('--pep8-max-line-length', type=int, default=79,
                         help="pep8 max line length")
+                        
+    parser.add_argument('--ignore', nargs='*', help="ignore PEP's", default=[])
+
+    parser.add_argument('--select', nargs='*', help="select only these PEP's", default=[])
 
     settings = parser.parse_args().__dict__
     filename = settings.pop('filename')
